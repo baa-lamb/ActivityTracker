@@ -1,40 +1,10 @@
 import os
 import sys
-import random
-from PySide6 import QtCore, QtWidgets, QtGui
 
+from PySide6 import QtCore, QtWidgets
 
-## Dialog to create new activity
-class ActivityCreatorDialog(QtWidgets.QDialog):
-    def __init__(self):
-        super().__init__()
-
-        self.activity_name = ""
-
-        self.line_edit = QtWidgets.QLineEdit()
-        self.line_edit.setPlaceholderText("Activity")
-
-        self.ok_button = QtWidgets.QPushButton("apply")
-        self.ok_button.clicked.connect(self.set_activity_name)
-
-        self.cancel_button = QtWidgets.QPushButton("cancel")
-        self.cancel_button.clicked.connect(self.reject)
-
-        layout = QtWidgets.QGridLayout(self)
-        layout.addWidget(self.line_edit, 0, 0, 2, 0, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.ok_button, 1, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.cancel_button, 1, 1, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-        #layout.setContentsMargins(10, 10, 10, 10)
-
-    def set_activity_name(self):
-        self.activity_name = self.line_edit.text()
-        if self.activity_name == "":
-            message_box = QtWidgets.QMessageBox(self)
-            message_box.setText("Enter activity name!")
-            message_box.exec_()
-        else:
-            self.accept()
-
+import constants
+from dialogs.activityCreator import  ActivityCreatorDialog
 
 ## Main widget. Contains:
 ##      1) button to add new activity
@@ -44,9 +14,12 @@ class MainWidget(QtWidgets.QWidget):
         super().__init__()
 
         self.add_activity_button = QtWidgets.QPushButton("Add activity to track!")
+        self.add_activity_button.setMinimumHeight(30)
+        #self.add_activity_button.setStyleSheet()
 
         self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.add_activity_button)
+        self.layout.addWidget(self.add_activity_button, alignment=QtCore.Qt.AlignmentFlag.AlignBottom)
+        self.layout.setContentsMargins(3, 3, 0, 10)
 
         self.add_activity_button.clicked.connect(self.add_activity)
 
@@ -55,7 +28,7 @@ class MainWidget(QtWidgets.QWidget):
     def add_activity(self):
         dialog = ActivityCreatorDialog()
         #dialog.resize(100, 80)
-        dialog.exec_()
+        dialog.exec()
         n = dialog.activity_name
         a = n
 
@@ -64,7 +37,7 @@ def main():
     app = QtWidgets.QApplication([])
 
     widget = MainWidget()
-    widget.resize(300, 600)
+    widget.resize(constants.MAIN_WINDOW_W, constants.MAIN_WINDOW_H)
     widget.show()
 
     sys.exit(app.exec())
